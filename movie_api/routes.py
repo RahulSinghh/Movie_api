@@ -2,7 +2,6 @@ from flask import  flash, redirect, request, abort,  make_response
 from movie_api import app, db, bcrypt
 from movie_api.models import User, Movie, Genre
 from flask_login import login_user, current_user,logout_user,login_required
-import os, binascii
 
 from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
@@ -232,27 +231,24 @@ def delete_movie(current_user, movie_id):
 
 
 @app.route('/search/movie_name/<string:movie_name>')
-@token_required
-def search_movie(current_user,movie_name):
+def search_movie(movie_name):
 	movie = Movie.query.filter_by(name=movie_name).all()
 	print(movie)
 	if movie:
-		return str(movie)
+		return jsonify({'Result' : str(movie)})
 	else :
-		return jsonify({'message' : 'No movie found!'})
+		return jsonify({'Result' : 'No movie found!'})
 
 
 @app.route('/search/movie_genre/<string:genre_name>')
-@token_required
-def search_genre(current_user,genre_name):
+def search_genre(genre_name):
 	genre = Genre.query.filter_by(gen=genre_name).all()
-	print(genre)
 	search = []
 	for gen in genre :
 		search.append(gen.movie_genre)
 	if genre:
-		return str(search)
+		return jsonify({'Result' : str(search)})
 	else :
-		return jsonify({'message' : 'No movie found!'})
+		return jsonify({'Result' : 'No movie found!'})
 	
 
