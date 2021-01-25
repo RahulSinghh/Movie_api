@@ -37,6 +37,8 @@ def token_required(f):
 
     return decorated
 
+
+@app.route('/')
 @app.route('/all_users', methods=['GET'])
 def all_users():
 
