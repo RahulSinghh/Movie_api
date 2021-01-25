@@ -57,11 +57,8 @@ def all_users():
 
 
 @app.route('/register_user', methods=['POST'])
-# @token_required
-def register_user():#(current_user):
+def register_user():
 
-    # if not current_user.admin:
-    #     return jsonify({'message' : 'Cannot perform that function!'})
 
     data = request.get_json()
 
@@ -71,7 +68,7 @@ def register_user():#(current_user):
     public_id = str(uuid.uuid4())
     print(str(uuid.uuid4()))
     new_user = User(public_id=public_id, username=username, email = email,
-    				password=hashed_password, admin=data['admin'])
+    				password=hashed_password, admin=False)
     db.session.add(new_user)
     db.session.commit()
 
