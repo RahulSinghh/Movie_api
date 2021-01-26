@@ -9,11 +9,10 @@ class AuthTest(unittest.TestCase):
 	def test_login(self):
 
 		tester 	 = app.test_client(self)
-		response = tester.get('/login',headers= {'Authorization':_basic_auth_str('Admin','12345')})
+		response = tester.get('/login',headers= {'Authorization':_basic_auth_str('Admin','admin@123')})
 		
 		data = response.content_type
 		data1 = response.get_json()
-		print(response.get_json())
 
 		assert response.status_code == 200
 		assert 'json' in data
@@ -26,7 +25,7 @@ class AuthTest(unittest.TestCase):
 		
 		data = response.content_type
 		data1 = response.get_json()
-		print(response.get_json())
+		# print(response.get_json())
 		assert response.status_code == 401
 
 
@@ -34,30 +33,37 @@ class AuthTest(unittest.TestCase):
 		# Dummy DATA
 
 		val = {
-				    "users": [
-				        {
-				            "admin": True,
-				            "email": "singhrahul1497@gmail.com",
-				            "password": "$2b$12$wbaDWlSPeW7k6X5i9OcXHO6ORVMNe2vTV7UxpXV.Cbp0laDh3vjGu",
-				            "public_id": "f0bd1cb6-ae3c-4e70-b806-3baeb7f4bcd5",
-				            "username": "Rahul"
-				        },
-				        {
-				            "admin": True,
-				            "email": "rohit@gmail.com",
-				            "password": "$2b$12$lY8iH.5fO5ggfmPHbhI19eb76U8nO.61LNKgXORkTvp3EXhdmuXgu",
-				            "public_id": "86679048-b210-4666-ae24-eb8d5e8ab77f",
-				            "username": "Admin"
-				        },
-				        {
-				            "admin": False,
-				            "email": "notAdmin@gmail.com",
-				            "password": "$2b$12$DRhy7193ozCRxdcrpnKRv.CbYUMwikBOJf3ZPiozJYT0cTW8hM3p.",
-				            "public_id": "4376f823-5e9b-4045-ab81-d4074510702d",
-				            "username": "Non Admin"
-				        }
-				    ]
-			   }
+		    "Users": [
+		        {
+		            "admin": True,
+		            "email": "admin1@gmail.com",
+		            "password": "$2b$12$Auxliq26ygnyHDQYzHv7eeYq1gXasquNNpD2WtgfzKnY150ViqZ5m",
+		            "public_id": "61cb3b8f-a668-49b5-92f5-d0a707eedd9e",
+		            "username": "Admin1"
+		        },
+		        {
+		            "admin": True,
+		            "email": "admin@gmail.com",
+		            "password": "$2b$12$lRNoMsz.dfPN6xzf516U/OsTXQWq5vr4lDMOb2h2m9KiH4TH1HsuS",
+		            "public_id": "2e03a4e7-135b-4a1a-8a2f-92ce88972c03",
+		            "username": "Admin"
+		        },
+		        {
+		            "admin": False,
+		            "email": "nonadmin@gmail.com",
+		            "password": "$2b$12$mONssoHRbhgx9M.xsCUbh.dwJKbPFh8iZUTjpYVQic3LZl9kukfxe",
+		            "public_id": "98ad2ef2-60ae-4d90-8026-05ac831cdb19",
+		            "username": "Non Admin"
+		        },
+		        {
+		            "admin": False,
+		            "email": "nonadmin2@gmail.com",
+		            "password": "$2b$12$6kJvfcRWgRXPlnUMsdZCRuOG7OuMScOYIuRgHpI7qYCTlOKwTkIWm",
+		            "public_id": "cd55feb4-e07c-4f93-9b34-6bd94de09dc1",
+		            "username": "Non Admin2"
+		        }
+		    ]
+		}
 		tester 	 = app.test_client(self)
 		response = tester.get('/all_users')
 		response_type = response.content_type
@@ -68,15 +74,15 @@ class AuthTest(unittest.TestCase):
 	# Admin Add movie 
 	def test_admin_add_movie(self):
 
-		headers = {'Authorization':_basic_auth_str('Admin','12345')}
+		headers = {'Authorization':_basic_auth_str('Admin','admin@123')}
 		
 
 
 		tester 	 	= app.test_client(self)
-		response 	= tester.get('/login',headers= {'Authorization':_basic_auth_str('Admin','12345')})
+		response 	= tester.get('/login',headers= {'Authorization':_basic_auth_str('Admin','admin@123')})
 		data     	= response.get_json()
 		token 		= data['token']
-		print(token)
+		# print(token)
 		
 		new_movie_payload = {
 		    "99popularity": 79.0,
@@ -111,10 +117,10 @@ class AuthTest(unittest.TestCase):
 
 
 		tester 	 	= app.test_client(self)
-		response 	= tester.get('/login',headers= {'Authorization':_basic_auth_str('Non Admin','1234')})
+		response 	= tester.get('/login',headers= {'Authorization':_basic_auth_str('Non Admin','nonadmin@123')})
 		data     	= response.get_json()
 		token 		= data['token']
-		print(token)
+		# print(token)
 		
 		new_movie_payload = {
 		    "99popularity": 79.0,
@@ -131,7 +137,7 @@ class AuthTest(unittest.TestCase):
 		}
 
 		headers = {"x-access-token":"{}".format(token)}
-		print(headers)
+		# print(headers)
 
 		response 		= tester.post('/add_movie', json= new_movie_payload, headers= headers)
 		response_data 	= response.data 
@@ -144,7 +150,7 @@ class AuthTest(unittest.TestCase):
 
 	def test_all_movie(self):
 		tester 	 = app.test_client(self)
-		response = tester.get('/get_all_movie')
+		response = tester.get('/all_movies')
 		response_type = response.content_type
 		data = response.get_json()
 		# print(response)
@@ -156,22 +162,57 @@ class AuthTest(unittest.TestCase):
 	# Movies with Genre = 'Adventure' Search 
 	def test_search_genre(self):
 		tester 	 		= app.test_client(self)
-		response 		= tester.get('/search/movie_genre/ Fantasy')
+		response 		= tester.get('/search/movie_genre/Fantasy')
 		response_type 	= response.content_type
 		data 			= response.get_json()
- 		content 		= data['Result']
- 		print(content)
+ 		content 		= data
+ 		# print(content.items)
 		# 8 searched of genre were found which are of type text/html
 
 		# Dummy Data
-		expected_result = '''[Post('The Wizard of Oz', 'Victor Fleming','8.3','83.0','2021-01-24 18:04:40.198573'), 
-		Post('Star Wars', 'George Lucas','8.8','88.0','2021-01-24 18:04:49.826268'), 
-		Post('E.T. : The Extra-Terrestrial', 'Steven Spielberg','7.9','79.0','2021-01-24 20:08:09.963947')'''
+		expected_result = {
+		    "Count of result": 4,
+		    "Result": [
+		        {
+		            "date_added": "Tue, 26 Jan 2021 16:13:08 GMT",
+		            "director": "J. Searle Dawley",
+		            "imdb_score": 6.4,
+		            "movie_id": 15,
+		            "name": "Snow White",
+		            "popularity": 64.0
+		        },
+		        {
+		            "date_added": "Tue, 26 Jan 2021 16:13:09 GMT",
+		            "director": "F.W. Murnau",
+		            "imdb_score": 8.1,
+		            "movie_id": 56,
+		            "name": "Nosferatu, eine Symphonie des Grauens",
+		            "popularity": 81.0
+		        },
+		        {
+		            "date_added": "Tue, 26 Jan 2021 16:13:09 GMT",
+		            "director": "Tod Browning",
+		            "imdb_score": 7.7,
+		            "movie_id": 63,
+		            "name": "Dracula",
+		            "popularity": 77.0
+		        },
+		        {
+		            "date_added": "Tue, 26 Jan 2021 16:13:10 GMT",
+		            "director": "Carl Boese",
+		            "imdb_score": 7.4,
+		            "movie_id": 128,
+		            "name": "Der Golem, wie er in die Welt kam",
+		            "popularity": 74.0
+		        }
+		    ]
+		}
 
 
 
 		assert 'json' in response_type
-		assert response.status_code == 200 
+		assert response.status_code == 200
+		assert expected_result.items() == content.items()
 		# print(response_type,data.items())
 
 	# # Movies with Movie = 'The Wizard of Oz' Search 
@@ -180,14 +221,46 @@ class AuthTest(unittest.TestCase):
 		response 		= tester.get('/search/movie_name/The Wizard of Oz')
 		response_type 	= response.content_type
 		json_data 		= response.get_json()
-		content 		= json_data['Result']
+		content 		= json_data
+		print(content.items())
  		
-		expected_result = "[Post('The Wizard of Oz', 'Victor Fleming','8.3','83.0','2021-01-24 18:04:40.198573')]"
+		expected_result = {
+		    "Result": [
+		        {
+		            "date_added": "Tue, 26 Jan 2021 16:13:08 GMT",
+		            "director": "Victor Fleming",
+		            "genre": [
+		                "Adventure",
+		                " Family",
+		                " Fantasy",
+		                " Musical"
+		            ],
+		            "imdb_score": 8.3,
+		            "movie_id": 1,
+		            "name": "The Wizard of Oz",
+		            "popularity": 83.0
+		        },
+		        {
+		            "date_added": "Tue, 26 Jan 2021 16:13:08 GMT",
+		            "director": "Larry Semon",
+		            "genre": [
+		                "Comedy",
+		                " Family",
+		                " Fantasy",
+		                " Adventure"
+		            ],
+		            "imdb_score": 5.3,
+		            "movie_id": 37,
+		            "name": "The Wizard of Oz",
+		            "popularity": 53.0
+		        }
+		    ]
+		}
 
 		# 8 searched of genre were found which are of type text/html
 		assert 'json' in response_type
 		assert response.status_code == 200 
-		assert expected_result == content
+		assert expected_result.items() == content.items()
 
 
 if __name__ == "__main__":

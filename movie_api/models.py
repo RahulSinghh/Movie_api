@@ -26,7 +26,7 @@ class Movie(db.Model):
 	imdb_score 	= db.Column(db.Float, nullable = False)
 	name 		= db.Column(db.String(100), nullable = False)
 	date_added 	= db.Column(db.DateTime, nullable = False, default=datetime.utcnow)	 
-	genres 		= db.relationship('Genre', backref='movie_genre', lazy = True )
+	genres 		= db.relationship('Genre', cascade='all,delete' ,backref='movie_genre', lazy = True )
 	def __repr__(self):
 		return "Post('{}', '{}','{}','{}','{}')".format(self.name,self.director,self.imdb_score,
 														self.popularity, self.date_added)
