@@ -56,10 +56,7 @@ def all_users():
 
 
 @app.route('/register_user', methods=['POST'])
-@token_required
 def register_user():
-    if not current_user.admin:
-        return jsonify({'message' : 'Non Admin cannot perform that action'})
 
     data = request.get_json()
 
