@@ -10,6 +10,7 @@ def get_all_movie():
     movies= Movie.query.all()
 
     output = []
+    total = 0
 
     for movie in movies:
         movie_data = {}
@@ -24,8 +25,9 @@ def get_all_movie():
             genre_list.append(genre.gen)
         movie_data['genre'] = genre_list
         output.append(movie_data)
+        total += 1
 
-    return jsonify({'movies' : output})
+    return jsonify({'Count Total Movies':total,'Movies' : output})
 
 
 @app.route('/add_movie', methods=['POST'])
@@ -114,23 +116,53 @@ def get_one_movie(current_user, movie_id):
 
 @app.route('/search/movie_name/<string:movie_name>')
 def search_movie(movie_name):
-	movie = Movie.query.filter_by(name=movie_name).all()
-	print(movie)
-	if movie:
-		return jsonify({'Result' : str(movie)})
-	else :
-		return jsonify({'Result' : 'No movie found!'})
+    movies= Movie.query.filter_by(name = movie_name).all()
+
+    output = []
+    
+    for movie in movies:
+        movie_data = {}
+        movie_data['movie_id']   = movie.movie_id
+        movie_data['name']       = movie.name
+        movie_data['director']   = movie.director
+        movie_data['imdb_score'] = movie.imdb_score
+        movie_data['popularity'] = movie.popularity
+        movie_data['date_added'] = movie.date_added
+        genre_list = []
+        for genre in movie.genres:
+            genre_list.append(genre.gen)
+        movie_data['genre'] = genre_list
+        output.append(movie_data)
+
+    if output:
+        return jsonify({'Result' : output})
+    else :
+        return jsonify({'Result' : 'No movie found!'})
 
 
 @app.route('/search/movie_genre/<string:genre_name>')
 def search_genre(genre_name):
-	genre = Genre.query.filter_by(gen=genre_name).all()
-	search = []
-	for gen in genre :
-		search.append(gen.movie_genre)
-	if genre:
-		return jsonify({'Result' : str(search)})
-	else :
-		return jsonify({'Result' : 'No movie found!'})
-	
+    genre = Genre.query.filter_by(gen=genre_name).all()
+
+    output = []
+    total  = 0
+
+    for gen in genre:
+        movie_data = {}
+        movie_data['movie_id']   = gen.movie_genre.movie_id
+        movie_data['name']       = gen.movie_genre.name
+        movie_data['director']   = gen.movie_genre.director
+        movie_data['imdb_score'] = gen.movie_genre.imdb_score
+        movie_data['popularity'] = gen.movie_genre.popularity
+        movie_data['date_added'] = gen.movie_genre.date_added
+        output.append(movie_data)
+        total += 1
+
+    # for gen in genre :
+    # 	search.append(gen.movie_genre)
+    if output:
+        return jsonify({'Count of result': total , 'Result' : output})
+    else :
+        return jsonify({'Result' : 'No movie found!'})
+
 

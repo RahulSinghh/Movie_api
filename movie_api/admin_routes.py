@@ -24,7 +24,7 @@ def token_required(f):
             data = jwt.decode(token, app.config['SECRET_KEY'])
             current_user = User.query.filter_by(public_id=data['public_id']).first()
         except:
-            return jsonify({'message' : 'Token is invalid!'}), 401
+            return jsonify({'message' : 'Token is not valid!'}), 401
 
         return f(current_user, *args, **kwargs)
 
@@ -41,7 +41,7 @@ def all_users():
 
     users = User.query.all()
 
-    output = []
+    result = []
 
     for user in users:
         user_data = {}
@@ -50,24 +50,25 @@ def all_users():
         user_data['username'] = user.username
         user_data['password'] = user.password
         user_data['admin'] = user.admin
-        output.append(user_data)
+        result.append(user_data)
 
-    return jsonify({'users' : output})
+    return jsonify({'Users' : result})
 
 
 @app.route('/register_user', methods=['POST'])
+@token_required
 def register_user():
-
+    if not current_user.admin:
+        return jsonify({'message' : 'Non Admin cannot perform that action'})
 
     data = request.get_json()
 
     hashed_password = str(bcrypt.generate_password_hash(data['password']))
-    username =  str(data['username'])
-    email    = str(data['email'])
+    username  =  str(data['username'])
+    email     = str(data['email'])
     public_id = str(uuid.uuid4())
-    print(str(uuid.uuid4()))
 
-    new_user = User(public_id=public_id, username=username, email = email,
+    new_user  = User(public_id=public_id, username=username, email = email,
     				password=hashed_password, admin=False)
     db.session.add(new_user)
     db.session.commit()
@@ -78,13 +79,13 @@ def register_user():
 @token_required
 def promote_user(current_user, public_id):
     if not current_user.admin:
-        return jsonify({'message' : 'Cannot perform that function!'})
+        return jsonify({'message' : 'Non Admin cannot perform that action'})
 
     user 		= User.query.filter_by(public_id=public_id).first()
     username	= user.username
 
     if not user:
-        return jsonify({'message' : 'No user found!'})
+        return jsonify({'message' : 'User Not found'})
 
     user.admin = True
     db.session.commit()
@@ -95,13 +96,13 @@ def promote_user(current_user, public_id):
 @token_required
 def delete_user(current_user, public_id):
     if not current_user.admin:
-        return jsonify({'message' : 'Cannot perform that function!'})
+        return jsonify({'message' : 'Non Admin cannot perform that action'})
 
     user 		= User.query.filter_by(public_id=public_id).first()
     username	= user.username
 
     if not user:
-        return jsonify({'message' : 'No user found!'})
+        return jsonify({'message' : 'No user found'})
 
     db.session.delete(user)
     db.session.commit()
