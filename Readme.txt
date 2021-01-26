@@ -2,8 +2,10 @@
 Main file to run the application
 ##############################################
 
-i) python run.py ------ This file will host the API 
+i) python app.py ------ This file will host the API 
 ii) Test.py      ------ Test cases which describes the various functionality required for API
+
+Login using /login to get the token, click on header in Postman, Under key write 'x-access-token' and in value paste the token
 
 
 ##############################################

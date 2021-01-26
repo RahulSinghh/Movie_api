@@ -31,7 +31,11 @@ def token_required(f):
     return decorated
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({"Message" : "Login using /login get the token, click on header in Postman, Under key write 'x-access-token' and in value paste the token"})
+
+
 @app.route('/all_users', methods=['GET'])
 def all_users():
 
@@ -62,7 +66,7 @@ def register_user():
     email    = str(data['email'])
     public_id = str(uuid.uuid4())
     print(str(uuid.uuid4()))
-    
+
     new_user = User(public_id=public_id, username=username, email = email,
     				password=hashed_password, admin=False)
     db.session.add(new_user)
